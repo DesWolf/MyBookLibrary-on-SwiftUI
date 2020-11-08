@@ -12,7 +12,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List(library.sortedBooks, id: \.self) { book in
+            List(library.sortedBooks) { book in
                 BookRow(book: book, image: $library.uiImage[book])
             }
             .navigationTitle("My library")
@@ -32,6 +32,9 @@ struct BookRow: View {
                 Book.Image(title: book.title, size: 80, uiImage: image, cornerRadius: 12)
                 TitleAndAuthorStack(book: book, titleFont: .title2, authorFont: .title3)
                     .lineLimit(1)
+                Spacer()
+                BookmarkButton(book: book)
+                    .buttonStyle(BorderlessButtonStyle())
             }
             .padding(.vertical, 8)
         }

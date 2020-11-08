@@ -8,12 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var library = Library()
+    @State var addingNewBook = false
+    @EnvironmentObject var library: Library
     
     var body: some View {
         NavigationView {
-            List(library.sortedBooks) { book in
-                BookRow(book: book, image: $library.uiImage[book])
+            List {
+                Button {
+                    addingNewBook = true
+                } label: {
+                    Spacer()
+                    VStack(alignment: .center, spacing: 6) {
+                        Image(systemName: "book.circle")
+                            .font(.system(size: 60))
+                        Text("Add New Book")
+                            .font(.title)
+                    }
+                    Spacer()
+                }
+                .buttonStyle(BorderlessButtonStyle())
+                .padding(.vertical, 8)
+                .sheet(isPresented: $addingNewBook, content: NewBookView.init)
+                ForEach(library.sortedBooks) { book in
+                    BookRow(book: book)
+                }
             }
             .navigationTitle("My library")
         }
@@ -22,14 +40,13 @@ struct ContentView: View {
 
 struct BookRow: View {
     @ObservedObject var book: Book
-    @Binding var image: UIImage?
+    @EnvironmentObject var library: Library
     
     var body: some View {
         NavigationLink(
-            
-            destination: DetailView(book: book, image: $image)) {
+            destination: DetailView(book: book)) {
             HStack {
-                Book.Image(title: book.title, size: 80, uiImage: image, cornerRadius: 12)
+                Book.Image(title: book.title, size: 80, uiImage: library.uiImages[book], cornerRadius: 12)
                 VStack(alignment: .leading) {
                     TitleAndAuthorStack(book: book, titleFont: .title2, authorFont: .title3)
                     
@@ -50,10 +67,11 @@ struct BookRow: View {
     }
 }
 
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(Library())
             .previewedInAllCollorScheems
+
     }
 }

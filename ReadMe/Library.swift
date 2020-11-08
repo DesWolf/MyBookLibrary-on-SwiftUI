@@ -10,7 +10,7 @@ struct Library {
   var sortedBooks: [Book] { booksCache }
 
   private var booksCache: [Book] = [
-    .init(title: "Ein Neues Land", author: "Shaun Tan"),
+    .init(title: "Ein Neues Land", author: "Shaun Tan", microReview: "Prety good"),
     .init(title: "Bosch", author: "Laurinda Dixon"),
     .init(title: "Dare to Lead", author: "Brené Brown"),
     .init(title: "Blasting for Optimum Health Recipe Book", author: "NutriBullet"),
@@ -18,7 +18,7 @@ struct Library {
     .init(title: "A Guide to Tea", author: "Adagio Teas"),
     .init(title: "The Life and Complete Work of Francisco Goya", author: "P. Gassier & J Wilson"),
     .init(title: "Lady Cottington's Pressed Fairy Book", author: "Lady Cottington"),
-    .init(title: "How to Draw Cats", author: "Janet Rancan"),
+    .init(title: "How to Draw Cats", author: "Janet Rancan", microReview: "Prety sad"),
     .init(title: "Drawing People", author: "Barbara Bradley"),
     .init(title: "What to Say When You Talk to Yourself", author: "Shad Helmstetter")
   ]

@@ -9,7 +9,7 @@ import class PhotosUI.PHPickerViewController
 import SwiftUI
 
 struct DetailView: View {
-    let book: Book
+    @ObservedObject var book: Book
     @Binding var image: UIImage?
     @State var showingImagePicker = false
     @State var showingAlert = false
@@ -21,6 +21,11 @@ struct DetailView: View {
                 TitleAndAuthorStack(book: book, titleFont: .title, authorFont: .title2)
             }
             VStack {
+                Divider()
+                    .padding(.vertical)
+                TextField("Review..", text: $book.microReview)
+                Divider()
+                    .padding(.vertical)
                 Book.Image(title: book.title, uiImage: image, cornerRadius: 16)
                     .scaledToFit()
                 

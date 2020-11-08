@@ -29,7 +29,7 @@ struct BookRow: View {
             
             destination: DetailView(book: book, image: $image)) {
             HStack {
-                Book.Image(title: book.title, size: 80)
+                Book.Image(title: book.title, size: 80, uiImage: image, cornerRadius: 12)
                 TitleAndAuthorStack(book: book, titleFont: .title2, authorFont: .title3)
                     .lineLimit(1)
             }

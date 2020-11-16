@@ -28,6 +28,6 @@ struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         DetailView(book: .init())
             .environmentObject(Library())
-            .previewedInAllCollorScheems
+            .previewedInAllColorScheems
     }
 }

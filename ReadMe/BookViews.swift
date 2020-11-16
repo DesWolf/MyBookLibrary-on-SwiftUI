@@ -78,7 +78,7 @@ struct Book_Preview: PreviewProvider {
                 Book.Image(title: "Book2")
                 Book.Image(title: "Book1")
             }
-            .previewedInAllCollorScheems
+            .previewedInAllColorScheems
     }
 }
 
@@ -103,7 +103,7 @@ extension Book.Image {
 }
 
 extension View {
-    var previewedInAllCollorScheems: some View {
+    var previewedInAllColorScheems: some View {
         ForEach(ColorScheme.allCases, id: \.self, content: preferredColorScheme)
     }
 }

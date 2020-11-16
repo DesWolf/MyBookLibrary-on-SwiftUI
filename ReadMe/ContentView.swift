@@ -29,8 +29,8 @@ struct ContentView: View {
                 .buttonStyle(BorderlessButtonStyle())
                 .padding(.vertical, 8)
                 .sheet(isPresented: $addingNewBook, content: NewBookView.init)
-                ForEach(library.sortedBooks) { book in
-                    BookRow(book: book)
+                ForEach(Section.allCases, id: \.self) {
+                    SectionView(section: $0)
                 }
             }
             .navigationTitle("My library")
@@ -38,7 +38,7 @@ struct ContentView: View {
     }
 }
 
-struct BookRow: View {
+private struct BookRow: View {
     @ObservedObject var book: Book
     @EnvironmentObject var library: Library
     
@@ -67,11 +67,44 @@ struct BookRow: View {
     }
 }
 
+private struct SectionView: View {
+    let section: Section
+    @EnvironmentObject var library: Library
+    
+    var title: String {
+        switch section {
+        case .readMe:
+            return "Read Me!"
+        case .finished:
+            return "Finished!"
+        }
+    }
+    
+    var body: some View {
+        if let book = library.manuallySortedBooks[section] {
+            SwiftUI.Section(
+                header: ZStack {
+                    Image("BookTexture")
+                        .resizable()
+                        .scaledToFit()
+                    Text(title)
+                        .font(.custom("American Typewriter", size: 24))
+                }
+                .listRowInsets(.init())
+            ) {
+                ForEach(book) {
+                    BookRow(book: $0)
+                }
+            }
+        }
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .environmentObject(Library())
-            .previewedInAllCollorScheems
+            .previewedInAllColorScheems
 
     }
 }

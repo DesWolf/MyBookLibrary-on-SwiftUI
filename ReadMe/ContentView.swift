@@ -29,15 +29,48 @@ struct ContentView: View {
                 .buttonStyle(BorderlessButtonStyle())
                 .padding(.vertical, 8)
                 .sheet(isPresented: $addingNewBook, content: NewBookView.init)
-                ForEach(Section.allCases, id: \.self) {
-                    SectionView(section: $0)
+                
+                switch library.sortStyle {
+                case .title, .author:
+                    BookRows(data: library.sortedBooks, section: nil)
+                case .manual:
+                    ForEach(Section.allCases, id: \.self) {
+                        SectionView(section: $0)
+                    }
                 }
             }
-            .toolbar(content: EditButton.init)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Menu("Sort") {
+                        Picker("Sort Style", selection: $library.sortStyle) {
+                            ForEach(SortStyle.allCases, id: \.self) { sortStyle in
+                                Text("\(sortStyle)".capitalized)
+                            }
+                        }
+                    }
+                }
+                ToolbarItem(content: EditButton.init)
+            }
             .navigationBarTitle("My library")
         }
     }
 }
+
+private struct BookRows: DynamicViewContent {
+    let data: [Book]
+    let section: Section?
+    @EnvironmentObject var library: Library
+    
+    var body: some View {
+        ForEach(data) {
+            BookRow(book: $0)
+        }
+        .onDelete { indexSet in
+            library.deleteBooks(atOffSets: indexSet, section: section)
+        }
+    }
+}
+
 
 private struct BookRow: View {
     @ObservedObject var book: Book
@@ -58,7 +91,7 @@ private struct BookRow: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                    .lineLimit(1)
+                .lineLimit(1)
                 Spacer()
                 BookmarkButton(book: book)
                     .buttonStyle(BorderlessButtonStyle())
@@ -82,7 +115,7 @@ private struct SectionView: View {
     }
     
     var body: some View {
-        if let book = library.manuallySortedBooks[section] {
+        if let books = library.manuallySortedBooks[section] {
             SwiftUI.Section(
                 header: ZStack {
                     Image("BookTexture")
@@ -93,15 +126,11 @@ private struct SectionView: View {
                 }
                 .listRowInsets(.init())
             ) {
-                ForEach(book) {
-                    BookRow(book: $0)
-                }
-                .onDelete { indexSet in
-                    library.deleteBooks(atOffSets: indexSet, section: section)
-                }
-                .onMove(perform: { indices, newOffset in
-                    library.moveBooks(oldOffset: indices, newOffset: newOffset, section: section)
-                })
+                BookRows(data: books, section: section)
+                    .onMove { indices, newOffset in
+                        library.moveBooks(oldOffset: indices, newOffset: newOffset, section: section)
+                    }
+                    .moveDisabled(section == .none)
             }
         }
     }
@@ -112,6 +141,6 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
             .environmentObject(Library())
             .previewedInAllColorScheems
-
+        
     }
 }
